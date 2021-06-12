@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:metrica_plugin/metrica_plugin.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MetricaPlugin.activate("09126f9a-f624-4a80-a0f1-f04b8552c621");
   runApp(MyApp());
 }
 
@@ -49,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
+    MetricaPlugin.reportEvent("incrementCounter");
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below

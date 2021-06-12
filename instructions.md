@@ -3,6 +3,10 @@
 Интегрировать метрику в свое приложение на Flutter можно поискав подходящий плагин на `pub.dev` либо написав собственную интеграцию с нативными реализациями плагина. Далее инструкция для самостоятельной интеграции:
 ## 1. Создаем в своем проекте плагин под метрику для Flutter
 [Иструкцию по создания плагина на flutter](https://flutter.dev/docs/development/packages-and-plugins/developing-packages#step-1-create-the-package)
+В данной инструкции использовался `fluuter` версии `2.0.5` и команда:
+```
+flutter create --org com.example --template=plugin --platforms=android,ios -a kotlin metrica_plugin
+```
 ### 1.1 Добавляем в dart plugin методы для инициализации и отправки событий
 Эти методы будем вызывать из `dart` кода приложения.
 ```dart
@@ -16,23 +20,12 @@ class MetricaPlugin {
     await _channel.invokeMethod("activate", {"apiKey": apiKey});
   }
 
-  static Future<void> reportEvent(String name, Map<String, String> attributes) async {
+  static Future<void> reportEvent(String name, {Map<String, String> attributes}) async {
     await _channel.invokeMethod("reportEvent", {"name": name, "attributes": attributes});
   }
 }
 ```
 Похожим образом можно будет пробросить обращение и к любым другим платформенным методам метрики
-### 1.2 Инициализируем плагин
-В `main.dart` вашего приложения (**не плагина**):
-```
-    WidgetsFlutterBinding.ensureInitialized();
-    MetricaPlugin.activate("your-api-key");
-```
-### 1.3 Отправляем события
-События можно будет отправлять из любого места вашего приложения с помощью вызова:
-```
-    MetricaPlugin.reportEvent("EventName", {"attribute_1": "value_1", "attribute_2": "value_2"});
-```
 
 ## 2. Добавляем интеграцию с Android
 ### 2.1 Подключаем метрику для Android
@@ -82,11 +75,13 @@ class MetricaPlugin: FlutterPlugin, MethodCallHandler {
 ## 3. Добавляем интеграцию с iOS
 ### 3.1 Подключаем метрику для iOS
 При интеграции с iOS можно следовать [инструкции](https://appmetrica.yandex.ru/docs/mobile-sdk-dg/tasks/ios-quickstart.html)
+Чтобы посмотреть как подключить `pod` к iOS плагину можно обратиться к [документации flutter](https://flutter.dev/docs/development/packages-and-plugins/developing-packages#ios)
+
 - В `.podspec` файл плагина добавляем строчку: `s.dependency 'YandexMobileMetrica/Dynamic', '3.16.0'`
 - Перед запуском приложения на `ios` обязательно сделать `pod install` в директории с `ios` кодом
 
 ### 3.2 Добавляем поддержку платформенных методов
-```
+```swift
 import Flutter
 import UIKit
 import YandexMobileMetrica
@@ -130,6 +125,28 @@ public class SwiftMetricaPlugin: NSObject, FlutterPlugin {
     }
   }
 }
+```
+## 4. Использование плагина
+### 4.1 Инициализируем плагин
+- В `pubspec` своего приложения добавляем зависимость от плагина. Например, так:
+```
+  metrica_plugin:
+    path: ./metrica_plugin
+```
+- В `main.dart` вашего приложения активируем метрику:
+```dart
+    import 'package:metrica_plugin/metrica_plugin.dart';
+    ...
+    ...
+    WidgetsFlutterBinding.ensureInitialized();
+    MetricaPlugin.activate("your-api-key");
+```
+### 1.3 Отправляем события
+События можно будет отправлять из любого места вашего приложения с помощью вызова:
+```dart
+  import 'package:metrica_plugin/metrica_plugin.dart';
+  ...
+  MetricaPlugin.reportEvent("EventName", {"attribute_1": "value_1", "attribute_2": "value_2"});
 ```
 
 ## 4. Интегрируемся с другими платформами

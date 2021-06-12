@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
           child: TextButton(
             child: Text("Отправить событие"),
             onPressed: () {
-              MetricaPlugin.reportEvent("Клик по кнопке", {"date": DateTime.now().toIso8601String()});
+              MetricaPlugin.reportEvent("Клик по кнопке", attributes: {"date": DateTime.now().toIso8601String()});
             },
           ),
         ),
