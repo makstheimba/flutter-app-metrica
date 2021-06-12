@@ -152,3 +152,10 @@ public class SwiftMetricaPlugin: NSObject, FlutterPlugin {
 ## 4. Интегрируемся с другими платформами
 На данном этапе метрика успешно проинтегрирована в ваше приложение и ее можно будет использовать с платформами Android & iOS.
 Для интеграции с другими платформами (например, `web`) достаточно будет так же добавить соответствующии реализации методов для конкретной платформы.
+
+## 5. Ссылки на файлы с примерами кода
+[Тестовое приложение с интеграцией метрики](./metrica_plugin/example/lib/main.dart)
+
+[Android plugin](./metrica_plugin/android/src/main/kotlin/com/example/metrica_plugin/MetricaPlugin.kt)
+
+[Swift plugin](./metrica_plugin/ios/Classes/SwiftMetricaPlugin.swift)
